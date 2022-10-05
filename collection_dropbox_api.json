@@ -1,0 +1,856 @@
+{
+	"info": {
+		"_postman_id": "329bb9cc-400d-4019-813b-c080eed6deb7",
+		"name": "Dropbox API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16988170"
+	},
+	"item": [
+		{
+			"name": "Upload File",
+			"item": [
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "UploadFile_unauthentificated",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true
+								}
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Dropbox-API-Arg",
+										"value": "{\"autorename\": false,\"mode\": \"add\",\"mute\": false,\"path\": \"/HW.txt\",\"strict_conflict\": false}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/octet-stream",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "testdata/testfile.txt"
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_Upload}}",
+									"host": [
+										"{{apiURL_Upload}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UploadFile_wrong_request_type",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {
+									"content-type": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Dropbox-API-Arg",
+										"value": "{\"autorename\": false,\"mode\": \"add\",\"mute\": false,\"path\": \"/HW.txt\",\"strict_conflict\": false}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/octet-stream",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "testdata/testfile.txt"
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_Upload}}",
+									"host": [
+										"{{apiURL_Upload}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UploadFile_no_args",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Dropbox-API-Arg",
+										"value": "{\"autorename\": false,\"mode\": \"add\",\"mute\": false,\"path\": \"/HW.txt\",\"strict_conflict\": false}",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/octet-stream",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "testdata/testfile.txt"
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_Upload}}",
+									"host": [
+										"{{apiURL_Upload}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UploadFile_no_path",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Dropbox-API-Arg",
+										"value": "{\"autorename\": false,\"mode\": \"add\",\"mute\": false,\"strict_conflict\": false}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/octet-stream",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "file",
+									"file": {
+										"src": "testdata/testfile.txt"
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_Upload}}",
+									"host": [
+										"{{apiURL_Upload}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "UploadFile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"var responseJson = pm.response.json();\r",
+									"\r",
+									"if (responseJson && pm.response.code === 200){\r",
+									"    pm.collectionVariables.set(\"lastSuccessfullUpload\", responseJson);\r",
+									"    pm.collectionVariables.set(\"lastSuccessfullUpload_path\", responseJson.path_display);\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"FilePath as specified\", function () {\r",
+									"    var upload_path = pm.collectionVariables.get('upload_path');\r",
+									"    pm.expect(responseJson.path_display).to.eql(upload_path);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Dropbox-API-Arg",
+								"value": "{\"autorename\": false,\"mode\": \"add\",\"mute\": false,\"path\": \"{{upload_path}}\",\"strict_conflict\": false}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/octet-stream",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "testdata/testfile.txt"
+							}
+						},
+						"url": {
+							"raw": "{{apiURL_Upload}}",
+							"host": [
+								"{{apiURL_Upload}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var today=new Date();",
+							"var year2020 = new Date(\"2020-01-01\")",
+							"var uniqueId = today.getTime() - year2020.getTime();",
+							"",
+							"var fileName = `HW${uniqueId}.txt`;",
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "GetFileMetadata",
+			"item": [
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "GetMetaData_unauthentificated",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "oauth2",
+									"oauth2": [
+										{
+											"key": "addTokenTo",
+											"value": "header",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"include_deleted\": false,\r\n    \"include_has_explicit_shared_members\": false,\r\n    \"include_media_info\": false,\r\n    \"path\": \"/{{lastSuccessfullUploadFileName}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_GetMetaData}}",
+									"host": [
+										"{{apiURL_GetMetaData}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetMetaData_wrong_request_type",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"include_deleted\": false,\r\n    \"include_has_explicit_shared_members\": false,\r\n    \"include_media_info\": false,\r\n    \"path\": \"/{{lastSuccessfullUploadFileName}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_GetMetaData}}",
+									"host": [
+										"{{apiURL_GetMetaData}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetMetaData_no_payload",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_GetMetaData}}",
+									"host": [
+										"{{apiURL_GetMetaData}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetMetaData_no_path",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"include_deleted\": false,\r\n    \"include_has_explicit_shared_members\": false,\r\n    \"include_media_info\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_GetMetaData}}",
+									"host": [
+										"{{apiURL_GetMetaData}}"
+									]
+								}
+							},
+							"response": []
+						},							
+						{
+							"name": "GetMetaData_nonexistent",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 409\", function () {\r",
+											"    pm.response.to.have.status(409);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Error summary is not found\", function () {\r",
+											"    var responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.error_summary).to.contain(\"not_found\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"include_deleted\": false,\r\n    \"include_has_explicit_shared_members\": false,\r\n    \"include_media_info\": false,\r\n    \"path\": \"{{lastSuccessfullUpload_path}}.jpg\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_GetMetaData}}",
+									"host": [
+										"{{apiURL_GetMetaData}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "GetMetaData",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var lastUploadedMeta = pm.collectionVariables.get(\"lastSuccessfullUpload\");\r",
+									"\r",
+									"pm.test(\"File Data as uploaded (same name and size)\", function () {\r",
+									"    var responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.name).to.eql(lastUploadedMeta.name);\r",
+									"    pm.expect(responseJson.size).to.eql(lastUploadedMeta.size);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"include_deleted\": false,\r\n    \"include_has_explicit_shared_members\": false,\r\n    \"include_media_info\": false,\r\n    \"path\": \"{{lastSuccessfullUpload_path}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiURL_GetMetaData}}",
+							"host": [
+								"{{apiURL_GetMetaData}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "DeleteFile",
+			"item": [
+				{
+					
+					"name": "Negative",
+					"item": [
+						{
+							"name": "DeleteFile_nonexisting",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 409\", function () {\r",
+											"    pm.response.to.have.status(409);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Error summary is not found\", function () {\r",
+											"    var responseJson = pm.response.json();\r",
+											"    pm.expect(responseJson.error_summary).to.eql(\"path_lookup/not_found/.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"path\" : \"{{lastSuccessfullUpload_path}}.jpg\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{apiURL_DeleteFile}}",
+									"host": [
+										"{{apiURL_DeleteFile}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DeleteFile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"path\" : \"{{lastSuccessfullUpload_path}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apiURL_DeleteFile}}",
+							"host": [
+								"{{apiURL_DeleteFile}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "tokenName",
+				"value": "dropbox_oauth",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "body",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://api.dropboxapi.com/oauth2/token",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://www.dropbox.com/oauth2/authorize",
+				"type": "string"
+			},
+			{
+				"key": "tokenType",
+				"value": "bearer",
+				"type": "string"
+			},
+			{
+				"key": "accessToken",
+				"value": "{{authToken}}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"var today=new Date();",
+					"var year2020 = new Date(\"2020-01-01\")",
+					"var uniqueId = today.getTime() - year2020.getTime();",
+					"",
+					"var fileName = `HW${uniqueId}.txt`;",
+					"",
+					"pm.collectionVariables.set('upload_fileName',fileName);",
+					"pm.collectionVariables.set('upload_path', `/${fileName}`);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apiURL_GetMetaData",
+			"value": "https://api.dropboxapi.com/2/files/get_metadata"
+		},
+		{
+			"key": "apiURL_Upload",
+			"value": "https://content.dropboxapi.com/2/files/upload",
+			"type": "string"
+		},
+		{
+			"key": "apiURL_DeleteFile",
+			"value": "https://api.dropboxapi.com/2/files/delete_v2",
+			"type": "string"
+		},
+		{
+			"key": "fileName",
+			"value": ""
+		},
+		{
+			"key": "apiMethodUrl",
+			"value": ""
+		},
+		{
+			"key": "lastSuccessfullUpload",
+			"value": ""
+		},
+		{
+			"key": "lastSuccessfullUploadFileName",
+			"value": ""
+		},
+		{
+			"key": "upload_fileName",
+			"value": ""
+		},
+		{
+			"key": "upload_path",
+			"value": ""
+		},
+		{
+			"key": "lastSuccessfullUpload_path",
+			"value": ""
+		}
+	]
+}
