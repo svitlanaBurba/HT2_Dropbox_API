@@ -1,0 +1,12 @@
+{
+	"values": [
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals"
+}
