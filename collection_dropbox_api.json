@@ -663,7 +663,7 @@
 											"\r",
 											"pm.test(\"Error summary is not found\", function () {\r",
 											"    var responseJson = pm.response.json();\r",
-											"    pm.expect(responseJson.error_summary).to.eql(\"path_lookup/not_found/.\");\r",
+											"    pm.expect(responseJson.error_summary).to.contain(\"not_found\");\r",
 											"});"
 										],
 										"type": "text/javascript"
