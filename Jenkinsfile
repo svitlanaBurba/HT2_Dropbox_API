@@ -6,6 +6,12 @@ pipeline {
         git(url: 'https://github.com/svitlanaBurba/HT2_Dropbox_API', branch: 'main')
       }
     }
+    
+    stage('Bind Credentials') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'Dropbox', usernameVariable: 'APPKEY', passwordVariable: 'APPSECRET')]) {
+      }
+    }
 
     stage('Running Tests') {
       agent any
