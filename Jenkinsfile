@@ -9,7 +9,7 @@ pipeline {
     
     stage('Bind Credentials') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'Dropbox', usernameVariable: 'APPKEY', passwordVariable: 'APPSECRET')]) {
+        withCredentials([usernamePassword(credentialsId: 'Dropbox', usernameVariable: 'APPKEY', passwordVariable: 'APPSECRET')])
       }
     }
 
