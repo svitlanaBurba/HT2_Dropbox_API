@@ -14,9 +14,10 @@ pipeline {
       }
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'Dropbox', usernameVariable: 'APPKEY', passwordVariable: 'APPSECRET')]) {
-        sh '''npm i &&
+          sh '''npm i &&
 npm run test_with_creds'''
         }
+
       }
     }
 
