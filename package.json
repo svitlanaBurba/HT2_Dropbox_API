@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Dropbox API Tests",
   "scripts": {
-    "test": "newman run collection_dropbox_api.json --globals globals.json --export-globals globals.json -r htmlextra,cli --reporter-htmlextra-title \"Dropbox API Test Run\""
+    "check": "APPSECRET=123 echo $APPSECRET",
+    "test": "newman run collection_dropbox_api.json --globals globals.json --export-globals globals.json -r htmlextra,cli --reporter-htmlextra-title \"Dropbox API Test Run\"",
+    "test_with_creds": "newman run collection_dropbox_api.json --verbose --globals globals.json --export-globals globals.json --global-var \"appKey=$APPKEY\" --global-var \"appSecret=$APPSECRET\" --global-var \"refreshToken=$APPTOKEN\" -r htmlextra,cli --reporter-htmlextra-title \"Dropbox API Test Run\""
   },
   "author": "Svitlana Burba",
   "license": "ISC",
