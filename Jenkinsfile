@@ -10,7 +10,7 @@ pipeline {
     stage('Running Tests') {
       agent any
       environment {
-        APPTOKEN = 'uhbmPgx95y8AAAAAAAAAAQdakdXlAa-97j2364VC5ZqAyQAw5jdFkFtd6QYM4BIf'
+        APPTOKEN = credentials('Dropbox_Token')
       }
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'Dropbox', usernameVariable: 'APPKEY', passwordVariable: 'APPSECRET')]) {
