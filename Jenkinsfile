@@ -16,9 +16,20 @@ pipeline {
         }
 
         stage('Running Tests') {
+          agent {
+            node {
+              label 'Run tests'
+            }
+
+          }
+          environment {
+            APPKEY = '7ci75ruo3bydihz'
+            APPSECRET = '38h9zwlv5foanjt'
+            APPTOKEN = 'uhbmPgx95y8AAAAAAAAAAQdakdXlAa-97j2364VC5ZqAyQAw5jdFkFtd6QYM4BIf'
+          }
           steps {
-            sh '''npm i -g newman &&
-newman run collection_dropbox_api.json --globals globals.json --global-var "appKey=7ci75ruo3bydihz"  --global-var "appSecret=38h9zwlv5foanjt"  --global-var "refreshToken=uhbmPgx95y8AAAAAAAAAAQdakdXlAa-97j2364VC5ZqAyQAw5jdFkFtd6QYM4BIf"'''
+            sh '''npm i &&
+npm run test_with_creds'''
           }
         }
 
