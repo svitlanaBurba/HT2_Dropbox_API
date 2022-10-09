@@ -16,12 +16,7 @@ pipeline {
         }
 
         stage('Running Tests') {
-          agent {
-            node {
-              label 'Run tests'
-            }
-
-          }
+          agent any
           environment {
             APPKEY = '7ci75ruo3bydihz'
             APPSECRET = '38h9zwlv5foanjt'
