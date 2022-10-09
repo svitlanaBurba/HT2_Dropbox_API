@@ -21,7 +21,7 @@ You would need:
 ### Test Dropbox Account
 If you don't have a dropbox account to use for testing, create one by the following link: https://www.dropbox.com/register
 
-### Generate Authentication Token 
+### Obtain Dropbox OAuth2.0 Credentials 
 To configure an Oauth2.0 authorization for our project to your test account you need to request Dropbox to create an _app_. To do that:
 - Go to the [Dropbox App Console](https://www.dropbox.com/developers/apps) and log in to your test account
 - Select `Create App` and provide parameters:
