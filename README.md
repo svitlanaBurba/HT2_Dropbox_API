@@ -15,32 +15,44 @@ To install, clone the repository and install all the dependencies:  `npm i`
 ## Setup
 You would need:
 - Test Dropbox account
-- Authentication token for your test dropbox acount
-- Specify token in the project configuration
+- Dropbox app credentials and authorization code
+- Configure project
 
 ### Test Dropbox Account
 If you don't have a dropbox account to use for testing, create one by the following link: https://www.dropbox.com/register
 
 ### Generate Authentication Token 
-To obtain an Oauth2.0 token we need to request Dropbox to create an _app_. To do that:
+To configure an Oauth2.0 authorization for our project to your test account you need to request Dropbox to create an _app_. To do that:
 - Go to the [Dropbox App Console](https://www.dropbox.com/developers/apps) and log in to your test account
 - Select `Create App` and provide parameters:
 	- Scoped access = New
 	- Choose the type of access you need = Full Dropbox 
   - Name your app = you can use any unique name here (Dropbox requires that app names should be unique globally)
-- Now go to `Generated access token` section and click `Generate`. Copy generated token value.
+- Write down the following credentials:
+  - App key
+  - App Secret
+- Now you need to get a single-use authorization code for your app to access your test account. To get it, construct and open in browser the following link: 
+`https://www.dropbox.com/oauth2/authorize?client_id=%App Key Here%&response_type=code&token_access_type=offline`
+Confirm access to your app and copy provided Authorization Code
 
 ### Configure Project
-Open `globals.js` config file and put generated token to `authToken` value:
+Open `globals.js` config file and put credentials obtained on the previous step (App Key, App Secret and Auth Code) there:
 ```
-	"values": [
-		{
-			"key": "authToken",
-			"value": "token here",
-			"type": "default",
-			"enabled": true
-		}
-	],
+    {
+      "type": "any",
+      "value": "%App Key here%",
+      "key": "appKey"
+    },
+    {
+      "type": "any",
+      "value": "%App Secret here%",
+      "key": "appSecret"
+    },
+    {
+      "type": "any",
+      "value": "%Authotization Code here%",
+      "key": "appAuthCode"
+    }
 ```
 
 ## Usage - Running The Test Suite
@@ -52,6 +64,14 @@ npm run test
 By default this project uses 2 reporters: 
 - Newman CLI reporter that provides test run results to console
 - Newman HTML reporter that generates html report for each run and saves it to the `newman` directory
+
+## Jenkins integration
+All changes to this repository are automatically verified via the Jenkins build:
+http://139.144.79.230:8080/blue/pipelines/
+There are 2 pipelines:
+- API Testing - standard Jenkins build job
+- HT2_Dropbox_API - pipeline that is defined in Jenkins file in this repository
+
 
 ## Implemented Tests
 This project implements automated tests for the following Dropbox API scenarios:
