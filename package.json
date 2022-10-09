@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Dropbox API Tests",
   "scripts": {
-    "test": "newman run collection_dropbox_api.json --globals globals.json -r htmlextra,cli --reporter-htmlextra-title \"Dropbox API Test Run\""
+    "test": "newman run collection_dropbox_api.json --globals globals.json --export-globals globals.json -r htmlextra,cli --reporter-htmlextra-title \"Dropbox API Test Run\""
   },
   "author": "Svitlana Burba",
   "license": "ISC",
