@@ -65,13 +65,6 @@ By default this project uses 2 reporters:
 - Newman CLI reporter that provides test run results to console
 - Newman HTML reporter that generates html report for each run and saves it to the `newman` directory
 
-## Jenkins integration
-All changes to this repository are automatically verified via the Jenkins build:
-http://139.144.79.230:8080/blue/pipelines/
-There are 2 pipelines:
-- API Testing - standard Jenkins build job
-- HT2_Dropbox_API - pipeline that is defined in Jenkins file in this repository
-
 
 ## Implemented Tests
 This project implements automated tests for the following Dropbox API scenarios:
