@@ -7,136 +7,6 @@
   },
   "item": [
     {
-      "name": "Authorization",
-      "item": [
-        {
-          "name": "Get Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var responseJson = pm.response.json();\r",
-                  "\r",
-                  "if (responseJson.refresh_token) {\r",
-                  "    pm.globals.set(\"refreshToken\",responseJson.refresh_token);\r",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [""],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "basic",
-              "basic": [
-                {
-                  "key": "password",
-                  "value": "{{appSecret}}",
-                  "type": "string"
-                },
-                {
-                  "key": "username",
-                  "value": "{{appKey}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "grant_type",
-                  "value": "authorization_code",
-                  "type": "text"
-                },
-                {
-                  "key": "code",
-                  "value": "{{appAuthCode}}",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "https://api.dropbox.com/oauth2/token",
-              "protocol": "https",
-              "host": ["api", "dropbox", "com"],
-              "path": ["oauth2", "token"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Refresh Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var responseJson = pm.response.json();\r",
-                  "\r",
-                  "if (responseJson.access_token) {\r",
-                  "    pm.collectionVariables.set(\"accessToken\",responseJson.access_token);\r",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "basic",
-              "basic": [
-                {
-                  "key": "password",
-                  "value": "{{appSecret}}",
-                  "type": "string"
-                },
-                {
-                  "key": "username",
-                  "value": "{{appKey}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "refresh_token",
-                  "value": "{{refreshToken}}",
-                  "type": "text"
-                },
-                {
-                  "key": "grant_type",
-                  "value": "refresh_token",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "https://api.dropbox.com/oauth2/token",
-              "protocol": "https",
-              "host": ["api", "dropbox", "com"],
-              "path": ["oauth2", "token"]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
       "name": "Upload File",
       "item": [
         {
@@ -710,14 +580,132 @@
       "script": {
         "type": "text/javascript",
         "exec": [
-          "var today=new Date();",
-          "var year2020 = new Date(\"2020-01-01\");",
-          "var uniqueId = today.getTime() - year2020.getTime();",
+          "class Credentials {",
+          "    constructor(login, password) {",
+          "        this.login = login;",
+          "        this.password = password;",
+          "    }",
           "",
-          "var fileName = `HW${uniqueId}.txt`;",
+          "    get basicCredentialsPair() {",
+          "        const pair = Buffer.from(`${this.login}:${this.password}`).toString('base64');",
+          "        return pair;",
+          "    }",
+          "}",
           "",
-          "pm.collectionVariables.set('upload_fileName',fileName);",
-          "pm.collectionVariables.set('upload_path', `/${fileName}`);"
+          "class DropBoxAuthenticator extends Credentials {",
+          "    constructor(appKey, appSecret) {",
+          "        super(appKey, appSecret);",
+          "",
+          "        this.authUrl = 'https://api.dropbox.com/oauth2/token';",
+          "        this.requestHeader = {",
+          "            'Authorization': `Basic ${this.basicCredentialsPair}`,",
+          "            'Content-Type': 'application/x-www-form-urlencoded'",
+          "        }",
+          "    }",
+          "",
+          "    getRefreshAndAccessTokens (authCode, callback) {",
+          "        const request = {",
+          "            url: this.authUrl,",
+          "            method: 'POST',",
+          "            header: this.requestHeader,",
+          "            body: {",
+          "                mode: 'urlencoded',",
+          "                urlencoded: [",
+          "                    { key: 'grant_type', value: 'authorization_code' },",
+          "                    { key: 'code', value: authCode }",
+          "                ]",
+          "            }",
+          "        }",
+          "",
+          "        pm.sendRequest(request,",
+          "            (err, res) => {",
+          "                if (err || !res.json().refresh_token) {",
+          "                    console.log(err);",
+          "                } else {",
+          "                    callback( {",
+          "                       refresh_token: res.json().refresh_token,",
+          "                       access_token: res.json().access_token",
+          "                    });",
+          "                }",
+          "            });",
+          "    }",
+          "",
+          "    getAccessToken(refreshToken, callback) {",
+          "        const request = {",
+          "            url: this.authUrl,",
+          "            method: 'POST',",
+          "            header: this.requestHeader,",
+          "            body: {",
+          "                mode: 'urlencoded',",
+          "                urlencoded: [",
+          "                    { key: 'grant_type', value: 'refresh_token' },",
+          "                    { key: 'refresh_token', value: refreshToken }",
+          "                ]",
+          "            }",
+          "        }",
+          "",
+          "        pm.sendRequest(request,",
+          "            (err, res) => {",
+          "                if (err || !res.json().access_token) {",
+          "                    console.log(err);",
+          "                } else {",
+          "                    callback(res.json().access_token);",
+          "                }",
+          "            });",
+          "    }",
+          "",
+          "}",
+          "",
+          "class CollectionRun {",
+          "    constructor() {",
+          "        this.appKey = pm.globals.get('appKey');",
+          "        this.appSecret = pm.globals.get('appSecret');",
+          "        this.authCode = pm.globals.get('appAuthCode');",
+          "        this.refreshToken = pm.globals.get('refreshToken');",
+          "",
+          "        this.dropBoxAuthenticator = new DropBoxAuthenticator(this.appKey, this.appSecret);",
+          "    }",
+          "",
+          "    getAndSaveDropboxToken() {",
+          "        if (this.refreshToken && this.refreshToken.length > 0) {",
+          "",
+          "            this.dropBoxAuthenticator.getAccessToken(this.refreshToken, (token) => {",
+          "                this.accessToken = token;",
+          "                pm.globals.set('accessToken', token);",
+          "            });",
+          "",
+          "        } else if (this.authCode && this.authCode.length > 0) {",
+          "",
+          "            this.dropBoxAuthenticator.getRefreshAndAccessTokens(this.authCode, (tokens) => {",
+          "                this.refreshToken = tokens.refresh_token;",
+          "                this.accessToken = tokens.access_token;",
+          "",
+          "                pm.globals.set('refreshToken', this.refreshToken);",
+          "                pm.globals.set('accessToken', this.accessToken);",
+          "            });",
+          "        }",
+          "    }",
+          "",
+          "    _getUniqueFileName = () => {",
+          "        const today = new Date();",
+          "        const year2020 = new Date(\"2020-01-01\");",
+          "        const uniqueId = today.getTime() - year2020.getTime();",
+          "",
+          "        return `HW${uniqueId}.txt`;",
+          "    }",
+          "",
+          "    setVariables = () => {",
+          "        const fileName = this._getUniqueFileName();",
+          "",
+          "        pm.collectionVariables.set('upload_fileName', fileName);",
+          "        pm.collectionVariables.set('upload_path', `/${fileName}`);",
+          "    }",
+          "}",
+          "",
+          "const run = new CollectionRun();",
+          "run.getAndSaveDropboxToken();",
+          "run.setVariables();",
+          ""
         ]
       }
     },
@@ -743,6 +731,30 @@
       "key": "apiURL_DeleteFile",
       "value": "https://api.dropboxapi.com/2/file_requests/delete",
       "type": "string"
+    },
+    {
+      "key": "fileName",
+      "value": ""
+    },
+    {
+      "key": "apiMethodUrl",
+      "value": ""
+    },
+    {
+      "key": "lastSuccessfullUpload",
+      "value": ""
+    },
+    {
+      "key": "lastSuccessfullUploadFileName",
+      "value": ""
+    },
+    {
+      "key": "upload_fileName",
+      "value": ""
+    },
+    {
+      "key": "upload_path",
+      "value": ""
     }
   ]
 }
